@@ -1,14 +1,15 @@
-import React, { Component } from 'react'
+export default function Games(props) {
+  return (
+    <div>
+      <p> game {props.idx}</p>
+      <p> player name {props.playerName}</p>
 
-class Games extends Component {
-    render() {
-        return (
-            <div>
-                
-                
-            </div>
-        )
-    }
+      <button
+        onClick={() => {
+          this.props.handleJoin(props.id, props.socketId);
+        }}
+        join
+      ></button>
+    </div>
+  );
 }
-
-export default Games;
