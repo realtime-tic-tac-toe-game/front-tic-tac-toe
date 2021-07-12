@@ -14,16 +14,13 @@ class Game extends Component {
       player2score: 0,
     };
   }
-  componentDidMount() {
-
-    const payload = {
-      created_at: new Date().toLocaleString()
-    }
-    console.log('hello from create', payload);
-    socket.emit('createGame', payload);
-
-
-  }
+  // componentDidMount() {
+  //   // const payload = {
+  //   //   created_at: new Date().toLocaleString(),
+  //   // };
+  //   // console.log('hello from create', payload);
+  //   // socket.emit('createGame', payload);
+  // }
 
   render() {
     return (
