@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import Game from './Game';
 import io from 'socket.io-client';
@@ -10,11 +10,15 @@ class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      playerName: ' ',
+      playerName: '',
       hideForm: true,
       showName: false,
       showGame: false,
-      showJoin : false,
+      showJoin: false,
+      winner: null,
+      player: {},
+      game: {},
+      notes: [],
     };
   }
   componentDidMount() {
@@ -23,6 +27,26 @@ class Main extends Component {
 
       socket.on('claimed', function (payload) {
         alert(`some one joined youre game `);
+      });
+
+      socket.on('notes', (data) => {
+        const { message = '' } = data;
+        // notes.push(message);
+        // this.setState({
+        //   notes
+        // })
+        this.setState({ notes: [...this.state.notes, message] });
+      });
+
+      socket.on('creatPlayer', (data) => {
+        this.setState({ player: { ...this.state.player, data } });
+
+        console.log('createplayer', data);
+      });
+
+      socket.on('updatedGame', (data) => {
+        this.setState({ game: { ...this.state.game, data } });
+        console.log('updatedGame', data);
       });
     });
   }
@@ -45,15 +69,15 @@ class Main extends Component {
     socket.emit('createGame', payload);
     this.setState({
       showGame: true,
-
     });
   };
-  joinGameHandler = ()=> {
-    this.setState ({
-      showJoin : true,
+
+  joinGameHandler = () => {
+    this.setState({
+      showJoin: true,
       // showGame:false,
-    })
-  }
+    });
+  };
 
   render() {
     return (
@@ -77,7 +101,11 @@ class Main extends Component {
           Join Game
         </Button>
         {this.state.showGame && <Game />}
-        {this.state.showJoin && <Join playerName = {this.state.playerName}/>}
+
+        <Join
+          playerName={this.state.playerName}
+          showJoin={this.state.showJoin}
+        />
       </div>
     );
   }
