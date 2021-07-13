@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
 import Game from './Game';
 import io from 'socket.io-client';
-const SERVER_URL = process.env.SERVER_URL;
+const SERVER_URL = `localhost:5000/`;
 const socket = io(SERVER_URL, { transports: ['websocket'] });
 
 class Main extends Component {

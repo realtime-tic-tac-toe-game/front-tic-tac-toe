@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import io from 'socket.io-client';
 import Games from './Games';
 
-const socket = io(process.env.SERVER_URL, { transports: ['websocket'] });
+import io from 'socket.io-client';
+const SERVER_URL = `localhost:5000/`;
+const socket = io(SERVER_URL, { transports: ['websocket'] });
 
 class Join extends Component {
   constructor(props) {
