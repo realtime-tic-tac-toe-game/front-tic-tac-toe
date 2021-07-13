@@ -6,7 +6,7 @@ export default function Games(props) {
 
       <button
         onClick={() => {
-          this.props.handleJoin(props.id, props.socketId);
+          props.handleJoin(props.id, props.socketId);
         }}
         join
       ></button>

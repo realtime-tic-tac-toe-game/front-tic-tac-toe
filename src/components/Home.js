@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
 import Game from './Game';
 import io from 'socket.io-client';
+import Join from './Join';
 const SERVER_URL = `localhost:5000/`;
 const socket = io(SERVER_URL, { transports: ['websocket'] });
 
@@ -13,13 +14,14 @@ class Main extends Component {
       hideForm: true,
       showName: false,
       showGame: false,
+      showJoin : false,
     };
   }
   componentDidMount() {
     socket.on('connect', () => {
       console.log('hello connect');
 
-      socket.on('calimed', function (payload) {
+      socket.on('claimed', function (payload) {
         alert(`some one joined youre game `);
       });
     });
@@ -43,8 +45,15 @@ class Main extends Component {
     socket.emit('createGame', payload);
     this.setState({
       showGame: true,
+
     });
   };
+  joinGameHandler = ()=> {
+    this.setState ({
+      showJoin : true,
+      // showGame:false,
+    })
+  }
 
   render() {
     return (
@@ -64,10 +73,11 @@ class Main extends Component {
           Create Game
         </Button>
 
-        <Button variant="primary" href="/joinGame">
+        <Button variant="primary" onClick={this.joinGameHandler}>
           Join Game
         </Button>
         {this.state.showGame && <Game />}
+        {this.state.showJoin && <Join playerName = {this.state.playerName}/>}
       </div>
     );
   }
