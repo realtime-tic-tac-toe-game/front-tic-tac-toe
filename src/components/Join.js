@@ -6,17 +6,17 @@ const SERVER_URL = `localhost:5000/`;
 const socket = io(SERVER_URL, { transports: ['websocket'] });
 
 class Join extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      // hideForm: true,
-      // showName: false,
-      // showGame: false,
-      // gamesArr: [],
-      // onlineGamers: [],
-      // gameId: '',
-    };
-  }
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     // hideForm: true,
+  //     // showName: false,
+  //     // showGame: false,
+  //     // gamesArr: [],
+  //     // onlineGamers: [],
+  //     // gameId: '',
+  //   };
+  // }
   // componentDidMount() {
   //   socket.on('connect', () => {
   //     console.log('Hello from connect join');
@@ -54,51 +54,51 @@ class Join extends Component {
 
   //   socket.emit('claim', claimPayload);
   // };
-      hideForm: true,
-      showName: false,
-      showGame: false,
-      gamesArr: [],
-      onlineGamers: [],
-      // gameId: '',
-    };
-  }
-  componentDidMount() {
-    socket.on('connect', () => {
-      console.log('Hello from connect join');
-      socket.emit('join', { name: this.props.playerName });
+    //   hideForm: true,
+    //   showName: false,
+    //   showGame: false,
+    //   gamesArr: [],
+    //   onlineGamers: [],
+    //   // gameId: '',
+    // };
+  // }
+  // componentDidMount() {
+  //   socket.on('connect', () => {
+  //     console.log('Hello from connect join');
+  //     socket.emit('join', { name: this.props.playerName });
 
-      socket.emit('getAll');
+  //     socket.emit('getAll');
 
-      socket.on('newGame', (payload) => {
-        console.log('Before', payload, socket.id);
-        this.setState({ gamesArr: [...this.state.gamesArr, payload] });
-        console.log('after', payload);
-      });
-      socket.on('onlineGamers', (payload) => {
-        this.setState({ onlineGamers: [...this.state.onlineGamers, payload] });
-      });
-      socket.on('offlineGamers', (payload) => {
-        this.setState({
-          onlineGamers: this.state.onlineGamers.filter(
-            (gamers) => gamers.id !== payload.id
-          ),
-        });
-      });
-    });
-  }
+  //     socket.on('newGame', (payload) => {
+  //       console.log('Before', payload, socket.id);
+  //       this.setState({ gamesArr: [...this.state.gamesArr, payload] });
+  //       console.log('after', payload);
+  //     });
+  //     socket.on('onlineGamers', (payload) => {
+  //       this.setState({ onlineGamers: [...this.state.onlineGamers, payload] });
+  //     });
+  //     socket.on('offlineGamers', (payload) => {
+  //       this.setState({
+  //         onlineGamers: this.state.onlineGamers.filter(
+  //           (gamers) => gamers.id !== payload.id
+  //         ),
+  //       });
+  //     });
+  //   });
+  // }
 
-  handleJoin = (playerName, gameId) => {
-    let userId = prompt('enter the game id');
-    // this.setState({ gameId: userId });
-    console.log('hello handle join', userId);
+  // handleJoin = (playerName, gameId) => {
+  //   let userId = prompt('enter the game id');
+  //   // this.setState({ gameId: userId });
+  //   console.log('hello handle join', userId);
 
-    let claimPayload = {
-      name: this.props.playerName,
-      gameId: this.state.userId,
-    };
+  //   let claimPayload = {
+  //     name: this.props.playerName,
+  //     gameId: this.state.userId,
+  //   };
 
-    socket.emit('claim', claimPayload);
-  };
+  //   socket.emit('claim', claimPayload);
+  // };
 
   // updateData = (event) => {
   //   event.preventDefault();
@@ -114,13 +114,14 @@ class Join extends Component {
       <>
         {this.props.showJoin && (
           <div>
-            <h3>Choose Your Game :</h3>
+            <h3> Choose Your Game :</h3>
             <div>
               {this.props.gamesArr.map((game, idx) => {
                 return (
                   <Games
                     {...game}
                     handleJoin={this.props.handleJoin}
+                    showJoinGame ={this.props.showJoinGame}
 
                     idx={idx}
                     key={game.id}
@@ -129,7 +130,7 @@ class Join extends Component {
               })}
             </div>
             <aside>
-              <h3>available gamers :</h3>
+              <h3> available gamers :</h3>
               {this.props.onlineGamers.map((gamer) => {
 
                 return <h2 key={gamer.id}>{gamer.name}</h2>;

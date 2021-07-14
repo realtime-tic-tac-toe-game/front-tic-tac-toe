@@ -1,9 +1,7 @@
 import React from 'react';
 import Header from './components/Header';
 import Home from './components/Home';
-import Join from './components/Join';
-
-// import FavoriteDigimons from './components/FavoriteDigimons';
+// import Join from './components/Join';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 class App extends React.Component {
@@ -16,12 +14,9 @@ class App extends React.Component {
             <Route exact path="/">
               <Home />
             </Route>
-            {/* <Route exact path="/createGame">
-              <Game /> 
-            </Route>*/}
-            <Route exact path="/joinGame">
+            {/* <Route exact path="/joinGame">
               <Join />
-            </Route>
+            </Route> */}
           </Switch>
         </BrowserRouter>
       </>

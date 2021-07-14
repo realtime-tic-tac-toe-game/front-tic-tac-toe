@@ -1,32 +1,53 @@
 import React, { Component } from 'react';
-import Board from './Board';
-import io from 'socket.io-client';
-const SERVER_URL = process.env.SERVER_URL;
-const socket = io(SERVER_URL, { transports: ['websocket'] });
 
 class Game extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      values: Array(9).fill(''),
-      player1score: 0,
-      player2score: 0,
+      playBoard :[],
+      enable :'',
+      status:'waiting',
+      canpPlay:'',
+      playingComination :[],
+
+      // player1: true,
+      // player2: false,
     };
   }
-  // componentDidMount() {
-  //   // const payload = {
-  //   //   created_at: new Date().toLocaleString(),
-  //   // };
-  //   // console.log('hello from create', payload);
-  //   // socket.emit('createGame', payload);
-  // }
+
+  createBoard(row, col) {
+    let boardArr = [];
+    let cellNum = 0;
+
+    for (let i = 0; i < row; i++) {
+      let colArr = [];
+      for (let j = 0; j < col; j++) {
+        colArr.push(this.boardRender(cellNum++));
+      }
+      boardArr.push(
+        <div key={i} className={'row'}>
+          {colArr}
+        </div>
+      );
+    }
+
+    return boardArr;
+  }
+
+  boardRender(cellNum) {
+    return <button className={'cell'} onClicK={this.props.handleClick}>play</button>;
+  }
 
   render() {
     return (
-      <div>
-        <Board />
-      </div>
+      <>
+        
+        <div>{this.createBoard(3, 3)}</div>
+
+        <p>player 1 turn </p>
+        <p>player 2 turn </p>
+      </>
     );
   }
 }
