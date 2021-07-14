@@ -9,6 +9,51 @@ class Join extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      // hideForm: true,
+      // showName: false,
+      // showGame: false,
+      // gamesArr: [],
+      // onlineGamers: [],
+      // gameId: '',
+    };
+  }
+  // componentDidMount() {
+  //   socket.on('connect', () => {
+  //     console.log('Hello from connect join');
+  //     // socket.emit('join', { name: this.props.playerName });
+
+  //     // socket.emit('getAll');
+
+  //     // socket.on('newGame', (payload) => {
+  //     //   console.log('Before', payload, socket.id);
+  //     //   this.setState({ gamesArr: [...this.state.gamesArr, payload] });
+  //     //   console.log('after', payload);
+  //     // });
+  //     // socket.on('onlineGamers', (payload) => {
+  //     //   this.setState({ onlineGamers: [...this.state.onlineGamers, payload] });
+  //     // });
+  //     // socket.on('offlineGamers', (payload) => {
+  //     //   this.setState({
+  //     //     onlineGamers: this.state.onlineGamers.filter(
+  //     //       (gamers) => gamers.id !== payload.id
+  //     //     ),
+  //     //   });
+  //     // });
+  //   });
+  // }
+
+  // handleJoin = (playerName, gameId) => {
+  //   let userId = prompt('enter the game id');
+  //   // this.setState({ gameId: userId });
+  //   console.log('hello handle join', userId);
+
+  //   let claimPayload = {
+  //     name: this.props.playerName,
+  //     gameId: this.state.userId,
+  //   };
+
+  //   socket.emit('claim', claimPayload);
+  // };
       hideForm: true,
       showName: false,
       showGame: false,
@@ -69,22 +114,14 @@ class Join extends Component {
       <>
         {this.props.showJoin && (
           <div>
-            {/* {this.state.hideForm && (
-            <form onSubmit={(event) => this.updateData(event)}>
-              <label for="name">what is your name</label>
-              <input type="text" name="name" />
-              <input type="submit" />
-            </form>
-          )} */}
-            {/* {this.state.showName && <h2>Hello {this.state.player2Name}</h2>} */}
-
             <h3>Choose Your Game :</h3>
             <div>
-              {this.state.gamesArr.map((game, idx) => {
+              {this.props.gamesArr.map((game, idx) => {
                 return (
                   <Games
                     {...game}
-                    handleJoin={this.handleJoin}
+                    handleJoin={this.props.handleJoin}
+
                     idx={idx}
                     key={game.id}
                   />
@@ -93,7 +130,8 @@ class Join extends Component {
             </div>
             <aside>
               <h3>available gamers :</h3>
-              {this.state.onlineGamers.map((gamer) => {
+              {this.props.onlineGamers.map((gamer) => {
+
                 return <h2 key={gamer.id}>{gamer.name}</h2>;
               })}
             </aside>
