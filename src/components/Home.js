@@ -19,9 +19,6 @@ class Main extends Component {
       player: {},
       game: {},
       notes: [],
-      hideForm: true,
-      showName: false,
-      showGame: false,
       gamesArr: [],
       onlineGamers: [],
 
@@ -51,10 +48,10 @@ class Main extends Component {
       });
 
       socket.on('updatedGame', (data) => {
-        this.setState({ game: { ...this.state.game, data } });
+
+        this.setState({ game: { ...this.state.game, data } } );
         console.log('updatedGame', data);
       });
-
 
       socket.emit('join', { name: this.props.playerName });
 
@@ -75,6 +72,13 @@ class Main extends Component {
           ),
         });
       });
+      socket.on('endGame', data => {
+        const {winner} = data;
+        this.setState ({
+          winner : winner,
+        });
+      });
+
 
     });
   }
@@ -108,18 +112,39 @@ class Main extends Component {
   };
 
 
-  handleJoin = (playerName, gameId) => {
+  handleJoin = () => {
     let userId = prompt('enter the game id');
     // this.setState({ gameId: userId });
     console.log('hello handle join', userId);
 
     let claimPayload = {
       name: this.state.playerName,
-      gameId: this.state.userId,
+      gameId: userId,
     };
 
     socket.emit('claim', claimPayload);
+
   };
+  
+  handleClick = (value) =>{
+    socket.emit('playing', {
+      player :this.state.player,
+      squareValue : value,
+      gameId : this.state.game.id,
+    });
+  };
+
+  getWinner = () => {
+    return this.state.winner.player.id === this.state.player.id ? 'You Win The Game' : 'Try Again !' ;
+  };
+
+  showJoinGame =()=>{
+    this.setState ({
+      showGame:true,
+    })
+  }  
+
+  
 
   render() {
     return (
@@ -132,26 +157,37 @@ class Main extends Component {
           </form>
         )}
         {this.state.showName && <h2>Hello {this.state.playerName}</h2>}
-        <h2>How to play</h2>
-        <p>create a room , wait for a friend , enjoy</p>
 
-        <Button variant="primary" onClick={this.createGameHandler}>
-          Create Game
-        </Button>
+        {!this.state.showGame && 
+        <>
+         <h2>How to play</h2>
+         <h5>create a room , wait for a friend , enjoy</h5>
+  
+         <Button variant="primary" onClick={this.createGameHandler}>
+           Create Game
+         </Button>
+ 
+         <Button variant="primary" onClick={this.joinGameHandler}>
+           Join Game
+         </Button>
 
-        <Button variant="primary" onClick={this.joinGameHandler}>
-          Join Game
-        </Button>
-        {this.state.showGame && <Game />}
-
+        </>
+        }
         <Join
           playerName={this.state.playerName}
           showJoin={this.state.showJoin}
           handleJoin={this.handleJoin}
           gamesArr={this.state.gamesArr}
           onlineGamers={this.state.onlineGamers}
+          showJoinGame ={this.showJoinGame}
+          />
 
-        />
+        {this.state.showGame && 
+        <Game playerName = {this.state.playerName} 
+        game ={this.state.game}
+        handleClick ={this.handleClick}
+        winner ={this.state.winner} />}
+
       </div>
     );
   }
