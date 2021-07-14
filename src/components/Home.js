@@ -24,6 +24,7 @@ class Main extends Component {
       showGame: false,
       gamesArr: [],
       onlineGamers: [],
+
     };
   }
   componentDidMount() {
@@ -54,6 +55,7 @@ class Main extends Component {
         console.log('updatedGame', data);
       });
 
+
       socket.emit('join', { name: this.props.playerName });
 
       socket.emit('getAll');
@@ -73,6 +75,7 @@ class Main extends Component {
           ),
         });
       });
+
     });
   }
 
@@ -103,6 +106,7 @@ class Main extends Component {
       // showGame:false,
     });
   };
+
 
   handleJoin = (playerName, gameId) => {
     let userId = prompt('enter the game id');
@@ -146,6 +150,7 @@ class Main extends Component {
           handleJoin={this.handleJoin}
           gamesArr={this.state.gamesArr}
           onlineGamers={this.state.onlineGamers}
+
         />
       </div>
     );
