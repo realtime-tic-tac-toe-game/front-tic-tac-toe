@@ -19,6 +19,11 @@ class Main extends Component {
       player: {},
       game: {},
       notes: [],
+      hideForm: true,
+      showName: false,
+      showGame: false,
+      gamesArr: [],
+      onlineGamers: [],
     };
   }
   componentDidMount() {
@@ -47,6 +52,26 @@ class Main extends Component {
       socket.on('updatedGame', (data) => {
         this.setState({ game: { ...this.state.game, data } });
         console.log('updatedGame', data);
+      });
+
+      socket.emit('join', { name: this.props.playerName });
+
+      socket.emit('getAll');
+
+      socket.on('newGame', (payload) => {
+        console.log('Before', payload, socket.id);
+        this.setState({ gamesArr: [...this.state.gamesArr, payload] });
+        console.log('after', payload);
+      });
+      socket.on('onlineGamers', (payload) => {
+        this.setState({ onlineGamers: [...this.state.onlineGamers, payload] });
+      });
+      socket.on('offlineGamers', (payload) => {
+        this.setState({
+          onlineGamers: this.state.onlineGamers.filter(
+            (gamers) => gamers.id !== payload.id
+          ),
+        });
       });
     });
   }
@@ -79,6 +104,19 @@ class Main extends Component {
     });
   };
 
+  handleJoin = (playerName, gameId) => {
+    let userId = prompt('enter the game id');
+    // this.setState({ gameId: userId });
+    console.log('hello handle join', userId);
+
+    let claimPayload = {
+      name: this.state.playerName,
+      gameId: this.state.userId,
+    };
+
+    socket.emit('claim', claimPayload);
+  };
+
   render() {
     return (
       <div>
@@ -105,6 +143,9 @@ class Main extends Component {
         <Join
           playerName={this.state.playerName}
           showJoin={this.state.showJoin}
+          handleJoin={this.handleJoin}
+          gamesArr={this.state.gamesArr}
+          onlineGamers={this.state.onlineGamers}
         />
       </div>
     );
