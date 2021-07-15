@@ -22,6 +22,8 @@ class Main extends Component {
       gamesArr: [],
       onlineGamers: [],
       showSomeJoind: false,
+      updatedValue:null,
+      checkIndex :null,
     };
   }
   componentDidMount() {
@@ -74,12 +76,24 @@ class Main extends Component {
         });
       });
       socket.on('endGame', (data) => {
-        const { winner } = data;
-        this.setState({
-          winner: winner,
-        });
+        const { finalWinner } = data;
+        this.determineWinner(finalWinner);
+        console.log(this.state.winner);
       });
+      
     });
+  }
+  
+  determineWinner = (finalWinner)=>{
+    if (finalWinner.player.data.player1){
+      this.setState({
+        winner: finalWinner.player.data.player1.name,
+      });
+    } else {
+      this.setState({
+        winner: finalWinner.player.data.player2.name,
+      });
+    }
   }
 
   /// back to this
@@ -131,14 +145,35 @@ class Main extends Component {
     socket.emit('claim', claimPayload);
   };
 
-  handleClick = (value) => {
+  handleClick =  (value) => {
     console.log('clicked');
-    console.log(this.state.game.data.game.id);
+    // console.log(this.state.game.data.game.id);
+
     socket.emit('playing', {
       player: this.state.player,
       squareValue: value,
       gameId: this.state.game.data.game.id,
     });
+    console.log(this.state.player);
+    if(this.state.player.data.player2 ){
+      this.setState ({
+        updatedValue : 'O',
+        checkIndex:value,
+      })
+    }else {
+      this.setState ({
+        updatedValue : 'X',
+        checkIndex: value,
+      })
+    }
+    console.log('updated Value',this.state.updatedValue);
+    // socket.on('takeValue', (data) =>{
+    //   console.log('data',data);
+    //   this.setState ({
+    //     updatedValue  : data,
+    //   })
+    // });
+    // console.log('updatedValue',this.state.updatedValue); 
   };
 
   getWinner = () => {
@@ -197,6 +232,10 @@ class Main extends Component {
               game={this.state.game}
               handleClick={this.handleClick}
               winner={this.state.winner}
+              player={this.state.player}
+              updatedValue={this.state.updatedValue}
+              checkIndex={this.state.checkIndex}
+
             />
             {this.state.showSomeJoind && <p>your friend joined youre game </p>}
           </>
