@@ -5,11 +5,11 @@ class Game extends Component {
     super(props);
 
     this.state = {
-      playBoard :[],
-      enable :'',
-      status:'waiting',
-      canpPlay:'',
-      playingComination :[],
+      playBoard: [],
+      enable: '',
+      status: 'waiting',
+      canpPlay: '',
+      playingComination: [],
 
       // player1: true,
       // player2: false,
@@ -32,17 +32,29 @@ class Game extends Component {
       );
     }
 
+    // this.setState({ playBoard: boardArr });
+
     return boardArr;
   }
 
   boardRender(cellNum) {
-    return <button className={'cell'} onClicK={this.props.handleClick}>play</button>;
+    let currentValue = 'play';
+    if (this.state.playBoard[cellNum]) {
+      currentValue = this.state.playBoard[cellNum];
+    }
+    return (
+      <button
+        className={'cell'}
+        onClick={() => this.props.handleClick(cellNum)}
+      >
+        {currentValue}
+      </button>
+    );
   }
 
   render() {
     return (
       <>
-        
         <div>{this.createBoard(3, 3)}</div>
 
         <p>player 1 turn </p>
