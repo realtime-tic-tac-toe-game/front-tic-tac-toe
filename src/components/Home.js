@@ -21,15 +21,17 @@ class Main extends Component {
       notes: [],
       gamesArr: [],
       onlineGamers: [],
-
+      showSomeJoind: false,
     };
   }
   componentDidMount() {
     socket.on('connect', () => {
       console.log('hello connect');
 
-      socket.on('claimed', function (payload) {
-        alert(`some one joined youre game `);
+      socket.on('claimed', (payload) => {
+        // alert(`${payload.name} joined youre game`);
+        this.setState({ showSomeJoind: true });
+        console.log('hello from claimed');
       });
 
       socket.on('notes', (data) => {
@@ -48,8 +50,7 @@ class Main extends Component {
       });
 
       socket.on('updatedGame', (data) => {
-
-        this.setState({ game: { ...this.state.game, data } } );
+        this.setState({ game: { ...this.state.game, data } });
         console.log('updatedGame', data);
       });
 
@@ -72,16 +73,19 @@ class Main extends Component {
           ),
         });
       });
-      socket.on('endGame', data => {
-        const {winner} = data;
-        this.setState ({
-          winner : winner,
+      socket.on('endGame', (data) => {
+        const { winner } = data;
+        this.setState({
+          winner: winner,
         });
       });
-
-
     });
   }
+
+  /// back to this
+  createName = (length = 8) => {
+    return Math.random().toString(36).substr(2, length);
+  };
 
   updateData = (event) => {
     event.preventDefault();
@@ -92,13 +96,14 @@ class Main extends Component {
     });
   };
 
-  createGameHandler = () => {
+  createGameHandler = async () => {
     const payload = {
       created_at: new Date().toLocaleString(),
       name: this.state.playerName,
     };
     console.log('hello from create', payload);
-    socket.emit('createGame', payload);
+
+    await socket.emit('createGame', payload);
     this.setState({
       showGame: true,
     });
@@ -111,7 +116,6 @@ class Main extends Component {
     });
   };
 
-
   handleJoin = () => {
     let userId = prompt('enter the game id');
     // this.setState({ gameId: userId });
@@ -122,29 +126,32 @@ class Main extends Component {
       gameId: userId,
     };
 
-    socket.emit('claim', claimPayload);
+    console.log();
 
+    socket.emit('claim', claimPayload);
   };
-  
-  handleClick = (value) =>{
+
+  handleClick = (value) => {
+    console.log('clicked');
+    console.log(this.state.game.data.game.id);
     socket.emit('playing', {
-      player :this.state.player,
-      squareValue : value,
-      gameId : this.state.game.id,
+      player: this.state.player,
+      squareValue: value,
+      gameId: this.state.game.data.game.id,
     });
   };
 
   getWinner = () => {
-    return this.state.winner.player.id === this.state.player.id ? 'You Win The Game' : 'Try Again !' ;
+    return this.state.winner.player.id === this.state.player.id
+      ? 'You Win The Game'
+      : 'Try Again !';
   };
 
-  showJoinGame =()=>{
-    this.setState ({
-      showGame:true,
-    })
-  }  
-
-  
+  showJoinGame = () => {
+    this.setState({
+      showGame: true,
+    });
+  };
 
   render() {
     return (
@@ -158,36 +165,42 @@ class Main extends Component {
         )}
         {this.state.showName && <h2>Hello {this.state.playerName}</h2>}
 
-        {!this.state.showGame && 
-        <>
-         <h2>How to play</h2>
-         <h5>create a room , wait for a friend , enjoy</h5>
-  
-         <Button variant="primary" onClick={this.createGameHandler}>
-           Create Game
-         </Button>
- 
-         <Button variant="primary" onClick={this.joinGameHandler}>
-           Join Game
-         </Button>
+        {!this.state.showGame && (
+          <>
+            <h2>How to play</h2>
+            <h5>create a room , wait for a friend , enjoy</h5>
 
-        </>
-        }
+            <Button variant="primary" onClick={this.createGameHandler}>
+              Create Game
+            </Button>
+
+            <Button variant="primary" onClick={this.joinGameHandler}>
+              Join Game
+            </Button>
+          </>
+        )}
         <Join
           playerName={this.state.playerName}
           showJoin={this.state.showJoin}
           handleJoin={this.handleJoin}
           gamesArr={this.state.gamesArr}
           onlineGamers={this.state.onlineGamers}
-          showJoinGame ={this.showJoinGame}
-          />
+          showJoinGame={this.showJoinGame}
+        />
 
-        {this.state.showGame && 
-        <Game playerName = {this.state.playerName} 
-        game ={this.state.game}
-        handleClick ={this.handleClick}
-        winner ={this.state.winner} />}
-
+        {this.state.showGame && (
+          <>
+            {/* <p>{this.state.game.data.game.id}</p> */}
+            <Game
+              // gameId={this.state.game.data.game.id}
+              playerName={this.state.playerName}
+              game={this.state.game}
+              handleClick={this.handleClick}
+              winner={this.state.winner}
+            />
+            {this.state.showSomeJoind && <p>your friend joined youre game </p>}
+          </>
+        )}
       </div>
     );
   }
