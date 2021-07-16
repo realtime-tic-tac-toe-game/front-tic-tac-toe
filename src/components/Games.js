@@ -1,7 +1,7 @@
 export default function Games(props) {
   return (
     <div>
-      <p> game {props.idx}</p>
+      {/* <p> game {props.idx}</p>
       <p> player name {props.playerName}</p>
 
       <button
@@ -9,8 +9,9 @@ export default function Games(props) {
           props.handleJoin();
           props.showJoinGame();
         }}
-        join
-      ></button>
+      >
+        join this game
+      </button> */}
     </div>
   );
 }
