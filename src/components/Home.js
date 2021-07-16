@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component} from 'react';
 import { Button } from 'react-bootstrap';
 import Game from './Game';
 import io from 'socket.io-client';
@@ -27,6 +27,7 @@ class Main extends Component {
       showGameAfterCreate: false,
       AllGamesId: [],
       newestGameId: '',
+      allPlayer :[],
       // currentNameExist: false,
       // currentName: '',
     };
@@ -34,6 +35,15 @@ class Main extends Component {
   componentDidMount() {
     socket.on('connect', () => {
       console.log('hello connect');
+      socket.emit('allPlayer');
+      socket.on('getAllPlayer',(payload) => {
+         console.log('getallPlayer on',payload);
+         this.setState ({
+           allPlayer : payload,
+         })
+        console.log('allPlayer', this.state.allPlayer);
+      })
+
 
       socket.on('claimed', (payload) => {
         // alert(`${payload.name} joined youre game`);
@@ -52,10 +62,10 @@ class Main extends Component {
 
       socket.on('creatPlayer', (data) => {
         this.setState({
-          player: { ...this.state.playerName, data },
+          player: { ...this.state.player, data },
           // currentName: data.player.name,
         });
-        // console.log('createplayer', this.state.currentName);
+        console.log('createplayer', this.state.player);
       });
 
       socket.on('updatedGame', (data) => {
@@ -95,21 +105,83 @@ class Main extends Component {
       // });
       socket.on('endGame', (data) => {
         const { finalWinner } = data;
-        this.determineWinner(finalWinner);
-        console.log(this.state.winner);
+        // console.log('endGame',data.winner);
+        console.log('endGame',finalWinner);
+        if (finalWinner){
+            this.determineWinner(finalWinner);
+        }
+
       });
     });
+    // socket.on('refreshBoard', data =>{
+    //   this.setState({
+    //      game : data,
+    //      showGameAfterCreate:true,
+    //   })
+    //   console.log('my new data',data);
+    // })
   }
 
   determineWinner = (finalWinner) => {
+    console.log('final',finalWinner);
     if (finalWinner.player.data.player1) {
       this.setState({
         winner: finalWinner.player.data.player1.name,
+        showGameAfterCreate:false,
       });
-    } else {
+      alert(`Winner is ${this.state.winner} `);
+      socket.emit('refreshGame', {
+        gameId : this.state.game.data.game.id,
+        player1: this.state.game.data.game.player1,
+        player2: this.state.game.data.game.player2,
+      })
+      let game = { data:{game : { id:this.state.game.data.game.id ,
+        player1: this.state.game.data.game.player1,
+        player2: this.state.game.data.game.player2,
+        playTurn: this.state.game.data.game.player1,
+        playBoard: [
+          'play', 'play',
+          'play',    'play',
+          'play',    'play',
+          'play', 'play',
+          'play'
+        ],
+        status: 'waiting',
+        theWinner: null}}};
+      this.setState ({
+        game : game,
+        showGameAfterCreate:true,
+      })
+      // console.log('after create', this.state.game.data.game.playBoard);
+    } else if  (finalWinner.player.data.player2){
       this.setState({
         winner: finalWinner.player.data.player2.name,
+        showGameAfterCreate:false,
       });
+      alert(`Winner is ${this.state.winner} `);
+      socket.emit('refreshGame', {
+        gameId : this.state.game.data.game.id,
+        player1: this.state.game.data.game.player1,
+        player2: this.state.game.data.game.player2,
+      })
+      let game = { data:{game : { id:this.state.game.data.game.id ,
+        player1: this.state.game.data.game.player1,
+        player2: this.state.game.data.game.player2,
+        playTurn: this.state.game.data.game.player1,
+        playBoard: [
+          'play', 'play',
+          'play',    'play',
+          'play',    'play',
+          'play', 'play',
+          'play'
+        ],
+        status: 'waiting',
+        theWinner: null}}};
+        this.setState ({
+          game : game,
+          showGameAfterCreate:true,
+        })
+      // console.log('after create', this.state.game.data.game.playBoard);
     }
   };
 
@@ -195,26 +267,49 @@ class Main extends Component {
   };
 
   handleClick = (value) => {
-    console.log('clicked');
-    // console.log(this.state.game.data.game.id);
-
+    // console.log('clicked');
+    // if (this.state.player.data.player2) {
+    //   if (this.state.game.data.game.player2 === this.state.game.data.game.playTurn ) {
+    //     socket.emit('playing', {
+    //       player: this.state.player,
+    //       squareValue: value,
+    //       gameId: this.state.game.data.game.id,
+          
+    //     });
+    //   }
+    // }
+    // if (this.state.player.data.player1) {
+    //   if (this.state.game.data.game.player1 === this.state.game.data.game.playTurn ) {
+    //     socket.emit('playing', {
+    //       player: this.state.player,
+    //       squareValue: value,
+    //       gameId: this.state.game.data.game.id,
+          
+    //     });
+    //   }
+    // }
+    console.log('gameTurn',this.state.game.data.game);
+    console.log('gamePlayer',this.state.player.id);
     socket.emit('playing', {
       player: this.state.player,
       squareValue: value,
       gameId: this.state.game.data.game.id,
+      
     });
-    console.log(this.state.player);
-    if (this.state.player.data.player2) {
-      this.setState({
-        updatedValue: 'O',
-        checkIndex: value,
-      });
-    } else {
-      this.setState({
-        updatedValue: 'X',
-        checkIndex: value,
-      });
-    }
+  
+    
+    // console.log(this.state.player);
+    // if (this.state.player.data.player2) {
+    //   this.setState({
+    //     updatedValue: 'O',
+    //     checkIndex: value,
+    //   });
+    // } else {
+    //   this.setState({
+    //     updatedValue: 'X',
+    //     checkIndex: value,
+    //   });
+    // }
     console.log('updated Value', this.state.updatedValue);
     // socket.on('takeValue', (data) =>{
     //   console.log('data',data);
@@ -225,11 +320,11 @@ class Main extends Component {
     // console.log('updatedValue',this.state.updatedValue);
   };
 
-  getWinner = () => {
-    return this.state.winner.player.id === this.state.player.id
-      ? 'You Win The Game'
-      : 'Try Again !';
-  };
+  // getWinner = () => {
+  //   return this.state.winner.player.id === this.state.player.id
+  //     ? 'You Win The Game'
+  //     : 'Try Again !';
+  // };
 
   showJoinGame = () => {
     this.setState({
@@ -281,7 +376,6 @@ class Main extends Component {
             currentName={this.state.currentName}
           />
         </>
-        {/* )} */}
 
         {this.state.showGameAfterCreate && (
           <>
@@ -299,9 +393,21 @@ class Main extends Component {
             {this.state.showSomeJoind && <p>your friend joined your game </p>}
           </>
         )}
+        <h2> All Players : </h2>
+        {this.state.allPlayer.map((item,index) => {
+          return (
+            <>
+            <p>{item.playerName}</p>
+            </>
+          )
+        })
+        }
+         
       </div>
     );
   }
 }
 
 export default Main;
+
+// SERVER_URL=http://localhost:5000

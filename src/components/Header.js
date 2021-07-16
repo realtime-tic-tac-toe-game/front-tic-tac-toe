@@ -9,7 +9,6 @@ class Header extends Component {
         <Navbar bg="dark" variant="dark">
           <Navbar.Brand href="#home">Tic Tac Toe</Navbar.Brand>
           <Nav className="me-auto">
-            {/* <Nav.Link href="/">Home</Nav.Link> */}
           </Nav>
         </Navbar>
       </div>

@@ -7,12 +7,10 @@ class Game extends Component {
     this.state = {
       playBoard: [],
       enable: '',
-      status: 'waiting',
-      canpPlay: '',
+      // status: 'waiting',
+      // canpPlay: '',
       playingComination: [],
-      currentValue: 'play',
-      // player1: true,
-      // player2: false,
+      
     };
   }
 
@@ -37,20 +35,23 @@ class Game extends Component {
     return boardArr;
   }
   boardRender(cellNum) {
-    let currentValue = 'play';
+    let currentValue ='play' ;
 
-    if (this.props.updatedValue && this.props.checkIndex === cellNum) {
-      this.setState({
-        currentValue: this.props.updatedValue,
-      });
-    }
+    // if (this.props.updatedValue && this.props.checkIndex === cellNum) {
+    // //     currentValue= this.props.updatedValue;
+    // currentValue = this.props.game.data.game.playBoard[cellNum];
+    //     console.log('currentValue',currentValue);
 
+    // } else {
+    //   currentValue = 'play';
+    // }
+    console.log(this.props.game);
     return (
       <button
         className={'cell'}
         onClick={() => this.props.handleClick(cellNum)}
       >
-        {this.state.currentValue}
+        {this.props.game.data.game.playBoard[cellNum]}
       </button>
     );
   }
@@ -59,6 +60,8 @@ class Game extends Component {
     return (
       <>
         <div>{this.createBoard(3, 3)}</div>
+
+
 
         {/* <p>player 1 turn </p>
         <p>player 2 turn </p> */}
