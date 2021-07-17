@@ -1,6 +1,7 @@
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
 import Game from './Game';
+import Chat from './Chat';
 import io from 'socket.io-client';
 import Join from './Join';
 const SERVER_URL = `localhost:5000/`;
@@ -27,38 +28,40 @@ class Main extends Component {
       showGameAfterCreate: false,
       AllGamesId: [],
       newestGameId: '',
-      allPlayer :[],
+      allPlayer: [],
       // currentNameExist: false,
       // currentName: '',
+      chat: [],
+      showChat: false,
     };
   }
   componentDidMount() {
     socket.on('connect', () => {
       console.log('hello connect');
       socket.emit('allPlayer');
-      socket.on('getAllPlayer',(payload) => {
-         console.log('getallPlayer on',payload);
-         this.setState ({
-           allPlayer : payload,
-         })
-        console.log('allPlayer', this.state.allPlayer);
-      })
 
+      socket.on('getAllPlayer', (payload) => {
+        console.log('getallPlayer on', payload);
+        this.setState({
+          allPlayer: payload,
+        });
+        console.log('allPlayer', this.state.allPlayer);
+      });
+
+      socket.on('getChat', (data) => {
+        // console.log('getChat', data);
+        this.setState({
+          chat: data,
+          showChat: true,
+        });
+        // console.log('allPlayer', this.state.chat);
+      });
 
       socket.on('claimed', (payload) => {
         // alert(`${payload.name} joined youre game`);
         this.setState({ showSomeJoind: true });
         console.log('hello from claimed');
       });
-
-      // socket.on('notes', (data) => {
-      //   const { message = '' } = data;
-      //   // notes.push(message);
-      //   // this.setState({
-      //   //   notes
-      //   // })
-      //   this.setState({ notes: [...this.state.notes, message] });
-      // });
 
       socket.on('creatPlayer', (data) => {
         this.setState({
@@ -106,11 +109,10 @@ class Main extends Component {
       socket.on('endGame', (data) => {
         const { finalWinner } = data;
         // console.log('endGame',data.winner);
-        console.log('endGame',finalWinner);
-        if (finalWinner){
-            this.determineWinner(finalWinner);
+        console.log('endGame', finalWinner);
+        if (finalWinner) {
+          this.determineWinner(finalWinner);
         }
-
       });
     });
     // socket.on('refreshBoard', data =>{
@@ -123,64 +125,84 @@ class Main extends Component {
   }
 
   determineWinner = (finalWinner) => {
-    console.log('final',finalWinner);
+    console.log('final', finalWinner);
     if (finalWinner.player.data.player1) {
       this.setState({
         winner: finalWinner.player.data.player1.name,
-        showGameAfterCreate:false,
+        showGameAfterCreate: false,
       });
       alert(`Winner is ${this.state.winner} `);
       socket.emit('refreshGame', {
-        gameId : this.state.game.data.game.id,
+        gameId: this.state.game.data.game.id,
         player1: this.state.game.data.game.player1,
         player2: this.state.game.data.game.player2,
-      })
-      let game = { data:{game : { id:this.state.game.data.game.id ,
-        player1: this.state.game.data.game.player1,
-        player2: this.state.game.data.game.player2,
-        playTurn: this.state.game.data.game.player1,
-        playBoard: [
-          'play', 'play',
-          'play',    'play',
-          'play',    'play',
-          'play', 'play',
-          'play'
-        ],
-        status: 'waiting',
-        theWinner: null}}};
-      this.setState ({
-        game : game,
-        showGameAfterCreate:true,
-      })
+      });
+      let game = {
+        data: {
+          game: {
+            id: this.state.game.data.game.id,
+            player1: this.state.game.data.game.player1,
+            player2: this.state.game.data.game.player2,
+            playTurn: this.state.game.data.game.player1,
+            playBoard: [
+              'play',
+              'play',
+              'play',
+              'play',
+              'play',
+              'play',
+              'play',
+              'play',
+              'play',
+            ],
+            status: 'waiting',
+            theWinner: null,
+          },
+        },
+      };
+      this.setState({
+        game: game,
+        showGameAfterCreate: true,
+      });
       // console.log('after create', this.state.game.data.game.playBoard);
-    } else if  (finalWinner.player.data.player2){
+    } else if (finalWinner.player.data.player2) {
       this.setState({
         winner: finalWinner.player.data.player2.name,
-        showGameAfterCreate:false,
+        showGameAfterCreate: false,
       });
       alert(`Winner is ${this.state.winner} `);
       socket.emit('refreshGame', {
-        gameId : this.state.game.data.game.id,
+        gameId: this.state.game.data.game.id,
         player1: this.state.game.data.game.player1,
         player2: this.state.game.data.game.player2,
-      })
-      let game = { data:{game : { id:this.state.game.data.game.id ,
-        player1: this.state.game.data.game.player1,
-        player2: this.state.game.data.game.player2,
-        playTurn: this.state.game.data.game.player1,
-        playBoard: [
-          'play', 'play',
-          'play',    'play',
-          'play',    'play',
-          'play', 'play',
-          'play'
-        ],
-        status: 'waiting',
-        theWinner: null}}};
-        this.setState ({
-          game : game,
-          showGameAfterCreate:true,
-        })
+      });
+      let game = {
+        data: {
+          game: {
+            id: this.state.game.data.game.id,
+            player1: this.state.game.data.game.player1,
+            player2: this.state.game.data.game.player2,
+            playTurn: this.state.game.data.game.player1,
+            playBoard: [
+              'play',
+              'play',
+              'play',
+              'play',
+              'play',
+              'play',
+              'play',
+              'play',
+              'play',
+            ],
+            status: 'waiting',
+            theWinner: null,
+          },
+        },
+      };
+      this.setState({
+        game: game,
+        showGameAfterCreate: true,
+      });
       // console.log('after create', this.state.game.data.game.playBoard);
     }
   };
@@ -274,7 +296,7 @@ class Main extends Component {
     //       player: this.state.player,
     //       squareValue: value,
     //       gameId: this.state.game.data.game.id,
-          
+
     //     });
     //   }
     // }
@@ -284,20 +306,18 @@ class Main extends Component {
     //       player: this.state.player,
     //       squareValue: value,
     //       gameId: this.state.game.data.game.id,
-          
+
     //     });
     //   }
     // }
-    console.log('gameTurn',this.state.game.data.game);
-    console.log('gamePlayer',this.state.player.id);
+    console.log('gameTurn', this.state.game.data.game);
+    console.log('gamePlayer', this.state.player.id);
     socket.emit('playing', {
       player: this.state.player,
       squareValue: value,
       gameId: this.state.game.data.game.id,
-      
     });
-  
-    
+
     // console.log(this.state.player);
     // if (this.state.player.data.player2) {
     //   this.setState({
@@ -320,17 +340,22 @@ class Main extends Component {
     // console.log('updatedValue',this.state.updatedValue);
   };
 
-  // getWinner = () => {
-  //   return this.state.winner.player.id === this.state.player.id
-  //     ? 'You Win The Game'
-  //     : 'Try Again !';
-  // };
-
   showJoinGame = () => {
     this.setState({
       showGame: true,
       showJoin: false,
     });
+  };
+
+  chatUpdate = (event) => {
+    event.preventDefault();
+
+    let massageObj = {
+      name: this.state.playerName,
+      massage: event.target.chat.value,
+    };
+    console.log('massageObj', massageObj);
+    socket.emit('chatSend', massageObj);
   };
 
   render() {
@@ -393,21 +418,26 @@ class Main extends Component {
             {this.state.showSomeJoind && <p>your friend joined your game </p>}
           </>
         )}
-        <h2> All Players : </h2>
-        {this.state.allPlayer.map((item,index) => {
+        <h3> All Players </h3>
+        {this.state.allPlayer.map((item, index) => {
           return (
             <>
-            <p>{item.playerName}</p>
+              <p key={index}>{item.playerName}</p>
             </>
-          )
-        })
-        }
-         
+          );
+        })}
+        <h3> available Players</h3>
+        {this.state.onlineGamers.map((gamer, idx) => {
+          return <p key={idx}>{gamer.name}</p>;
+        })}
+        <Chat
+          chatUpdate={this.chatUpdate}
+          chat={this.state.chat}
+          showChat={this.state.showChat}
+        />
       </div>
     );
   }
 }
 
 export default Main;
-
-// SERVER_URL=http://localhost:5000
