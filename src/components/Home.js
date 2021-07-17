@@ -4,7 +4,8 @@ import Game from './Game';
 import Chat from './Chat';
 import io from 'socket.io-client';
 import Join from './Join';
-const SERVER_URL = `localhost:5000/`;
+// const SERVER_URL = `localhost:5000/`;
+const SERVER_URL = `xogame401.herokuapp.com/`;
 const socket = io(SERVER_URL, { transports: ['websocket'] });
 
 class Main extends Component {
