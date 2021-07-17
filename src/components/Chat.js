@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
+import './home.css';
 
 class Chat extends Component {
   render() {
     return (
       <div>
-        <div>massages</div>
+        <h3>Massages</h3>
 
         {this.props.showChat && (
-          <div>
+          <div className="cahts">
             {this.props.chat.map((item, idx) => {
               return (
-                <p key={idx}>
-                  {item.name} : {item.massage}
+                <p className="mass" key={idx}>
+                  <strong>{item.name}</strong> : {item.massage}
                 </p>
               );
             })}
@@ -21,12 +22,13 @@ class Chat extends Component {
         <div>
           <form onSubmit={(event) => this.props.chatUpdate(event)}>
             <input
+              className="myinput"
               type="text"
               name="chat"
               placeholder="type your message here"
               required
             />
-            <input type="submit" value="send" />
+            <input type="submit" value="&#10004;" />
           </form>
         </div>
       </div>
