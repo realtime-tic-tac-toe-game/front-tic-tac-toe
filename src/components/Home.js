@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './home.css';
 import Game from './Game';
 import Chat from './Chat';
 import io from 'socket.io-client';
@@ -241,13 +243,14 @@ class Main extends Component {
     if (!this.state.playerName) {
       let newName = Math.random().toString(36).substr(2, 6);
       this.setState({
-        playerName: ` player ${newName}`,
+        playerName: ` player${newName}`,
       });
       console.log(newName, this.state.playerName);
     }
 
     this.setState({
       showJoin: true,
+      showGame: true,
     });
   };
 
@@ -361,33 +364,47 @@ class Main extends Component {
 
   render() {
     return (
-      <div>
-        {this.state.hideForm && (
-          <>
-            <form onSubmit={(event) => this.updateData(event)}>
-              {/* <label for="name">what is your name</label> */}
-              <input type="text" name="name" placeholder="what is your name?" />
-              <input type="submit" value="enter" />
-            </form>
-          </>
-        )}
-        {this.state.playerName && <h2>Hello {this.state.playerName}</h2>}
-        {!this.state.showGame && (
-          <>
-            {/* <h2>How to play</h2> */}
-            <h5>create a room , wait for a friend , enjoy</h5>
+      <div className="home">
+        <div className="middlePart">
+          {this.state.hideForm && (
+            <div>
+              <form onSubmit={(event) => this.updateData(event)}>
+                {/* <label for="name">what is your name</label> */}
+                <input
+                  className="myinput2"
+                  type="text"
+                  name="name"
+                  placeholder="what is your name?"
+                />
+                <input type="submit" value="&#10004;" />
+              </form>
+            </div>
+          )}
+          {this.state.playerName && <h4>Hello {this.state.playerName}!</h4>}
+          {!this.state.showGame && (
+            <div className="games">
+              {/* <h2>How to play</h2> */}
+              <h5>enter a game , wait for a friend , enjoy</h5>
 
-            <Button variant="primary" onClick={this.createGameHandler}>
-              Create Game
-            </Button>
+              <Button
+                className="bottons"
+                variant="primary"
+                onClick={this.createGameHandler}
+              >
+                Create Game
+              </Button>
 
-            <Button variant="primary" onClick={this.joinGameHandler}>
-              Join Game
-            </Button>
-          </>
-        )}
-        {/* {this.state.currentName && ( */}
-        <>
+              <Button
+                className="bottons"
+                variant="primary"
+                onClick={this.joinGameHandler}
+              >
+                Join Game
+              </Button>
+            </div>
+          )}
+          {/* {this.state.currentName && ( */}
+
           <Join
             playerName={this.state.playerName}
             showJoin={this.state.showJoin}
@@ -401,41 +418,72 @@ class Main extends Component {
             AllGamesId={this.state.AllGamesId}
             currentName={this.state.currentName}
           />
-        </>
 
-        {this.state.showGameAfterCreate && (
-          <>
-            <p>{this.state.game.data.game.id}</p>
-            <Game
-              // gameId={this.state.game.data.game.id}
-              playerName={this.state.playerName}
-              game={this.state.game}
-              handleClick={this.handleClick}
-              winner={this.state.winner}
-              player={this.state.player}
-              updatedValue={this.state.updatedValue}
-              checkIndex={this.state.checkIndex}
-            />
-            {this.state.showSomeJoind && <p>your friend joined your game </p>}
-          </>
-        )}
-        <h3> All Players </h3>
-        {this.state.allPlayer.map((item, index) => {
-          return (
-            <>
-              <p key={index}>{item.playerName}</p>
-            </>
-          );
-        })}
-        <h3> available Players</h3>
-        {this.state.onlineGamers.map((gamer, idx) => {
-          return <p key={idx}>{gamer.name}</p>;
-        })}
-        <Chat
-          chatUpdate={this.chatUpdate}
-          chat={this.state.chat}
-          showChat={this.state.showChat}
-        />
+          {this.state.showGameAfterCreate && (
+            <div className="games">
+              <p>{this.state.game.data.game.id}</p>
+              <Game
+                // gameId={this.state.game.data.game.id}
+                playerName={this.state.playerName}
+                game={this.state.game}
+                handleClick={this.handleClick}
+                winner={this.state.winner}
+                player={this.state.player}
+                updatedValue={this.state.updatedValue}
+                checkIndex={this.state.checkIndex}
+              />
+              {this.state.showSomeJoind && <p>your friend joined your game </p>}
+            </div>
+          )}
+        </div>
+
+        <div className="player">
+          {/* <Accordion>
+            <Accordion.Item eventKey="0">
+              <Accordion.Header>Accordion Item #1</Accordion.Header>
+              <Accordion.Body>
+                <p>hi</p>
+              </Accordion.Body>
+            </Accordion.Item>
+            <Accordion.Item eventKey="1">
+              <Accordion.Header>Accordion Item #2</Accordion.Header>
+              <Accordion.Body>Lorem</Accordion.Body>
+            </Accordion.Item>
+          </Accordion> */}
+
+          <h3> Available Players</h3>
+          <div className="online">
+            {this.state.onlineGamers.map((gamer, idx) => {
+              return (
+                <div>
+                  <p className="mass" key={idx}>
+                    {gamer.name}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+          <h3> All Times Players </h3>
+          <div className="allPayer">
+            {this.state.allPlayer.map((item, index) => {
+              return (
+                <div>
+                  <p className="mass" key={index}>
+                    {item.playerName}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="chat">
+          <Chat
+            chatUpdate={this.chatUpdate}
+            chat={this.state.chat}
+            showChat={this.state.showChat}
+          />
+        </div>
       </div>
     );
   }

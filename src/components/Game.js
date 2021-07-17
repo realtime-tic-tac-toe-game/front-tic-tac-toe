@@ -55,12 +55,12 @@ class Game extends Component {
 
   render() {
     return (
-      <>
+      <div className="gameBored">
         <div>{this.createBoard(3, 3)}</div>
 
         {/* <p>player 1 turn </p>
         <p>player 2 turn </p> */}
-      </>
+      </div>
     );
   }
 }

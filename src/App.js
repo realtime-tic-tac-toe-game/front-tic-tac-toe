@@ -6,7 +6,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 class App extends React.Component {
   render() {
     return (
-      <>
+      <div>
         <Header />
         <BrowserRouter>
           <Switch>
@@ -15,7 +15,7 @@ class App extends React.Component {
             </Route>
           </Switch>
         </BrowserRouter>
-      </>
+      </div>
     );
   }
 }
