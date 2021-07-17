@@ -5,7 +5,6 @@ import React, { Component } from 'react';
 // const socket = io(SERVER_URL, { transports: ['websocket'] });
 
 class Join extends Component {
-
   render() {
     return (
       <>
@@ -32,6 +31,7 @@ class Join extends Component {
 
             <div>
               {/* {this.props.showGameAfterCreate && */}
+              {console.log(this.props.gamesArr)}
               {this.props.gamesArr.map((game, idx) => {
                 return (
                   <div key={idx}>

@@ -10,7 +10,6 @@ class Game extends Component {
       // status: 'waiting',
       // canpPlay: '',
       playingComination: [],
-      
     };
   }
 
@@ -35,8 +34,6 @@ class Game extends Component {
     return boardArr;
   }
   boardRender(cellNum) {
-    let currentValue ='play' ;
-
     // if (this.props.updatedValue && this.props.checkIndex === cellNum) {
     // //     currentValue= this.props.updatedValue;
     // currentValue = this.props.game.data.game.playBoard[cellNum];
@@ -60,8 +57,6 @@ class Game extends Component {
     return (
       <>
         <div>{this.createBoard(3, 3)}</div>
-
-
 
         {/* <p>player 1 turn </p>
         <p>player 2 turn </p> */}
