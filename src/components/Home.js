@@ -8,6 +8,7 @@ import io from 'socket.io-client';
 import Join from './Join';
 // const SERVER_URL = `localhost:5000/`;
 const SERVER_URL = `xogame401.herokuapp.com/`;
+
 const socket = io(SERVER_URL, { transports: ['websocket'] });
 
 class Main extends Component {
@@ -102,13 +103,7 @@ class Main extends Component {
       socket.on('onlineGamers', (payload) => {
         this.setState({ onlineGamers: [...this.state.onlineGamers, payload] });
       });
-      // socket.on('offlineGamers', (payload) => {
-      //   this.setState({
-      //     onlineGamers: this.state.onlineGamers.filter(
-      //       (gamers) => gamers.id !== payload.id
-      //     ),
-      //   });
-      // });
+
       socket.on('endGame', (data) => {
         const { finalWinner } = data;
         // console.log('endGame',data.winner);
@@ -129,24 +124,24 @@ class Main extends Component {
 
   determineWinner = (finalWinner) => {
     console.log('final', finalWinner);
-    if (finalWinner.player.data.player1) {
+    if (finalWinner.player.data.player) {
       this.setState({
-        winner: finalWinner.player.data.player1.name,
+        winner: finalWinner.player.data.player.name,
         showGameAfterCreate: false,
       });
       alert(`Winner is ${this.state.winner} `);
       socket.emit('refreshGame', {
         gameId: this.state.game.data.game.id,
-        player1: this.state.game.data.game.player1,
+        player1: this.state.game.data.game.player,
         player2: this.state.game.data.game.player2,
       });
       let game = {
         data: {
           game: {
             id: this.state.game.data.game.id,
-            player1: this.state.game.data.game.player1,
+            player1: this.state.game.data.game.player,
             player2: this.state.game.data.game.player2,
-            playTurn: this.state.game.data.game.player1,
+            playTurn: this.state.game.data.game.player,
             playBoard: [
               'play',
               'play',
@@ -175,7 +170,7 @@ class Main extends Component {
       });
       alert(`Winner is ${this.state.winner} `);
       socket.emit('refreshGame', {
-        gameId: this.state.game.data.game.id,
+        // gameId: this.state.game.data.game.id,
         player1: this.state.game.data.game.player1,
         player2: this.state.game.data.game.player2,
       });
